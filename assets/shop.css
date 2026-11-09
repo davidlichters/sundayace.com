@@ -1,0 +1,332 @@
+/* Desk'd Up, Vorschau RallyLoop. Ein Gestaltungssystem:
+   Schrift: Figtree 400/600/700. Farben: Navy (Logo, Knopf, Text), Blau (Auswahl, Haken, Links), Bernstein (nur Sterne), dazu Weiss und Grau.
+   Abstand: 4 8 12 16 24 32 48 64. Schriftgroessen: 14 16 18 22 28 36. Ein Knopf, eine Karte, Radius ueberall 12. */
+@font-face{font-family:'Figtree';font-weight:300 900;font-style:normal;font-display:swap;src:url('../fonts/Figtree.woff2') format('woff2')}
+/* Ersatzschrift mit gleicher Laufweite: kein Umbruch und kein Ruck, wenn Figtree spaet kommt */
+@font-face{font-family:'Figtree Ersatz';font-weight:400;src:local('Arial');size-adjust:99.6%}
+@font-face{font-family:'Figtree Ersatz';font-weight:700;src:local('Arial Bold'),local('Arial-BoldMT');size-adjust:96.6%}
+:root{
+  --navy:#0B1F3F;--blau:#1D5BD9;--stern:#F5A623;
+  --weiss:#fff;--grau:#566074;--grau-h:#F4F6FA;--linie:#DDE2EB;--wahl:#EEF3FE;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;
+  --r:12px;
+  --stern-bild:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1z'/%3E%3C/svg%3E");
+  --haken-bild:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='%231D5BD9' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+html.gesperrt{overflow:hidden}
+body{margin:0;font-family:'Figtree','Figtree Ersatz',Arial,sans-serif;font-size:16px;line-height:24px;color:var(--navy);background:var(--weiss);-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+img{height:auto}
+a{color:var(--blau)}
+[hidden]{display:none!important}
+h1,h2,h3{font-weight:700;letter-spacing:-.01em;margin:0}
+h2{font-size:28px;line-height:34px}
+h3{font-size:18px;line-height:24px}
+p{margin:0}
+button{font:inherit;color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 var(--s4)}
+.nur-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--blau);outline-offset:2px}
+
+/* Band und Kopf */
+.band{background:var(--navy);color:var(--weiss);font-size:14px;font-weight:600;line-height:20px;text-align:center;padding:var(--s1) var(--s4)}
+.kopf{background:var(--weiss);border-bottom:1px solid var(--linie)}
+.kopf .wrap{display:flex;align-items:center;gap:var(--s2);height:48px}
+.logo{display:block;flex:none;padding:6px 0}
+.logo img{height:32px;width:auto}
+.nav{display:none}
+.kopf__rechts{display:flex;align-items:center;margin-left:auto;margin-right:calc(var(--s2) * -1)}
+.symbol{position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;background:none;cursor:pointer;color:var(--navy)}
+.symbol svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.korbzahl{position:absolute;right:0;top:2px;min-width:20px;height:20px;border-radius:999px;background:var(--blau);color:var(--weiss);font-size:14px;font-weight:700;line-height:20px;text-align:center;padding:0 var(--s1)}
+
+/* Produkt */
+.produkt{padding:var(--s2) 0 var(--s7)}
+.produkt .wrap{display:grid;gap:var(--s2)}
+.galerie,.kauf{min-width:0}
+.galerie__haupt{position:relative}
+.galerie__spur{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:var(--r);background:var(--weiss);aspect-ratio:358/334}
+.galerie__spur::-webkit-scrollbar{display:none}
+.folie{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;margin:0;height:100%}
+.folie img{width:100%;height:100%;object-fit:contain;background:var(--weiss)}
+.folie--fuellt img{object-fit:cover}
+.zaehler{position:absolute;left:auto;right:var(--s2);top:var(--s2);bottom:auto;background:rgba(11,31,63,.72);color:var(--weiss);font-size:14px;font-weight:600;line-height:20px;padding:var(--s1) var(--s3);border-radius:999px;pointer-events:none}
+.daumen{display:none}
+
+.titel{font-size:22px;line-height:26px}
+.wertung{display:inline-flex;align-items:center;gap:var(--s2);font-size:16px;font-weight:600;line-height:24px;color:var(--navy);text-decoration:none;margin:-8px 0;padding:10px 0}
+.sterne{--voll:100%;display:inline-block;flex:none;width:90px;height:18px;background:linear-gradient(90deg,var(--stern) var(--voll),var(--linie) var(--voll));-webkit-mask:var(--stern-bild) left center/18px 18px repeat-x;mask:var(--stern-bild) left center/18px 18px repeat-x}
+.satz{font-size:16px;line-height:22px;color:var(--grau);margin:2px 0 6px}
+.haken{list-style:none;margin:0;padding:0}
+.haken li{padding-left:24px;line-height:22px;background:var(--haken-bild) left 3px/16px 16px no-repeat}
+
+/* Angebotskarten */
+.angebote{display:grid;gap:6px;min-width:0;margin:var(--s2) 0;padding:0;border:0;scroll-margin-top:8px}
+.angebot{display:flex;align-items:center;gap:10px;min-height:48px;background:var(--weiss);border:2px solid var(--linie);border-radius:var(--r);padding:var(--s2) var(--s3);cursor:pointer}
+.angebot input{position:absolute;opacity:0;pointer-events:none}
+.angebot:has(input:focus-visible){outline:2px solid var(--blau);outline-offset:2px}
+.punkt{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--grau)}
+.angebot.an{border-color:var(--blau);background:var(--wahl)}
+.angebot.an .punkt{border-color:var(--blau);background:var(--blau);box-shadow:inset 0 0 0 3px var(--weiss)}
+.angebot__mitte{flex:1;min-width:0}
+.angebot__eins{display:flex;align-items:center;flex-wrap:wrap;gap:0 var(--s2);line-height:22px}
+.angebot__name{font-weight:700}
+.angebot__sets{font-size:14px;color:var(--grau)}
+.etikett{font-size:14px;font-weight:600;line-height:18px;background:var(--blau);color:var(--weiss);border-radius:6px;padding:0 6px}
+.angebot__zwei{display:block;font-size:14px;line-height:18px;color:var(--grau)}
+.angebot__rechts{flex:none;text-align:right}
+.angebot__preis{display:block;font-size:18px;font-weight:700;line-height:22px}
+.angebot__spar{display:block;font-size:14px;font-weight:600;line-height:18px;color:var(--blau)}
+
+/* Knopf: einer fuer alles */
+.knopf{display:flex;align-items:center;justify-content:center;gap:var(--s2);width:100%;min-height:52px;border:2px solid var(--navy);border-radius:var(--r);background:var(--navy);color:var(--weiss);font:700 18px/24px 'Figtree','Figtree Ersatz',Arial,sans-serif;padding:var(--s3) var(--s4);text-align:center;text-decoration:none;cursor:pointer}
+.knopf svg{flex:none;width:16px;height:16px}
+.knopf:hover{background:#142C54;border-color:#142C54}
+.knopf--zweit{display:inline-flex;width:auto;min-height:48px;background:transparent;color:var(--navy);padding:var(--s2) var(--s5);font-size:16px}
+.knopf--zweit:hover{background:var(--grau-h);border-color:var(--navy)}
+
+/* Zusagen unter dem Knopf */
+.zusagen{list-style:none;margin:var(--s4) 0 0;padding:0;display:grid;gap:var(--s3)}
+.zusagen li{display:flex;gap:var(--s3);align-items:flex-start}
+.zusagen svg{flex:none;width:24px;height:24px;fill:none;stroke:var(--blau);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.zusagen strong{display:block;font-weight:600}
+.zusagen__sprung{display:flex;align-items:center;gap:var(--s3);min-height:44px;margin:-10px 0;color:var(--navy);text-underline-offset:3px}
+.zusagen__frage{color:var(--grau);line-height:22px}
+.datum{min-height:22px}
+.zusagen span{display:block;font-size:16px;line-height:22px;color:var(--grau);margin-top:2px}
+.zahlung{display:flex;align-items:center;flex-wrap:wrap;gap:4px 3px;margin-top:var(--s4)}
+.zahlung__sicher{display:inline-flex;align-items:center;gap:var(--s1);flex:0 0 100%;margin-right:0;font-size:14px;font-weight:600;line-height:20px;white-space:nowrap}
+.zahlung__sicher svg{flex:none}
+.zahlung>svg{flex:0 1 calc((100% - 22px)/8);max-width:38px;min-width:0;height:auto}
+.zahlung text{font-weight:700}
+
+/* Abschnitte */
+.abschnitt{padding:var(--s7) 0}
+.abschnitt--grau{background:var(--grau-h)}
+.schmal{max-width:760px;margin:0 auto}
+.kopfzeile{max-width:680px;margin:0 auto var(--s5);text-align:center}
+.kopfzeile p{color:var(--grau);margin-top:var(--s2)}
+.kopfzeile .sterne-zeile{margin-top:var(--s2)}
+
+/* Karte: eine fuer alles */
+.karte{background:var(--weiss);border:1px solid var(--linie);border-radius:var(--r);padding:var(--s4)}
+.karte h3{margin-bottom:var(--s1)}
+.karte p{color:var(--grau)}
+.karte p a{color:var(--blau)}
+.bild{border-radius:var(--r);width:100%}
+
+/* Reiter und FAQ */
+.reiter{display:grid;gap:var(--s2)}
+.reiter details{background:var(--weiss);border:1px solid var(--linie);border-radius:var(--r)}
+.reiter summary{display:flex;align-items:center;min-height:56px;padding:var(--s3) 44px var(--s3) var(--s4);font-size:18px;line-height:24px;font-weight:700;list-style:none;position:relative;cursor:pointer}
+.reiter summary::-webkit-details-marker{display:none}
+.reiter summary::after,.reiter summary::before{content:"";position:absolute;right:var(--s4);top:50%;width:14px;height:2px;background:var(--navy);margin-top:-1px}
+.reiter summary::before{transform:rotate(90deg);transition:transform .15s}
+.reiter details[open] summary::before{transform:rotate(0)}
+.reiter details>div{padding:0 var(--s4) var(--s4);color:var(--grau)}
+.reiter details>div p+p,.reiter details>div h3+p{margin-top:var(--s2)}
+.reiter h3{color:var(--navy);font-size:18px;line-height:26px;margin-top:var(--s4)}
+.liste{list-style:none;margin:var(--s2) 0 0;padding:0}
+.liste li{padding-left:24px;background:var(--haken-bild) left 4px/16px 16px no-repeat;margin-top:var(--s1)}
+.daten{margin:var(--s2) 0 0;display:grid;grid-template-columns:auto 1fr;gap:var(--s1) var(--s4)}
+.daten dt{color:var(--navy);font-weight:600}
+.daten dd{margin:0}
+
+/* Bewertungen */
+.sterne-zeile{display:flex;align-items:center;justify-content:center;gap:var(--s2);font-weight:600}
+.stimmen{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--s3)}
+.stimme{display:flex;flex-direction:column;gap:var(--s2)}
+.stimme__text{color:var(--navy)}
+.stimme__name{font-size:14px;font-weight:600;line-height:20px;color:var(--grau)}
+.stimme__fotos{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.stimme__foto{display:block;width:88px;height:88px;border-radius:8px;overflow:hidden;background:var(--grau-h)}
+.stimme__foto img{width:100%;height:100%;object-fit:cover}
+.mitte{text-align:center;margin-top:var(--s5)}
+.linkzeile a,.mitte a{display:inline-flex;align-items:center;min-height:44px}
+
+/* Platz, Stand, Schritte */
+.zwei{display:grid;gap:var(--s5)}
+.zwei h2{margin-bottom:var(--s3)}
+.zwei p+p{margin-top:var(--s3)}
+.textfarbe{color:var(--grau)}
+.reiter details>div,.stimme__text,.textfarbe,.notiz,.schritt p,.geschenk p{font-size:18px;line-height:26px}
+.platz{width:100%;height:auto}
+.platz .basis{fill:var(--blau)}
+.platz .schlitz{fill:var(--weiss)}
+.platz .schnur{stroke:var(--navy);stroke-width:1.5;stroke-dasharray:3 5;stroke-linecap:round}
+.platz .ball{fill:var(--stern)}
+.platz .du{fill:var(--navy)}
+.platz .du-kopf{fill:var(--weiss)}
+.platz .du-koerper{fill:var(--weiss)}
+.platz .mass{fill:none;stroke:var(--grau);stroke-width:1.5}
+.platz text{fill:var(--grau);font-size:14px;text-anchor:middle}
+.platz .gross{fill:var(--navy);font-size:18px;font-weight:700}
+.paar{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.paar figure{margin:0}
+.paar img{border-radius:var(--r);background:var(--weiss);width:100%;border:1px solid var(--linie)}
+.paar figcaption{font-size:14px;line-height:20px;color:var(--grau);margin-top:var(--s2)}
+.schritte{display:grid;gap:var(--s3)}
+.schritt{display:grid;grid-template-columns:128px 1fr;align-items:stretch;padding:0;overflow:hidden}
+.schritt img{width:100%;height:100%;min-height:104px;object-fit:cover}
+.schritt__links{object-position:20% 50%}
+.schritt>div{padding:var(--s3) var(--s4);align-self:center}
+.schritt b{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--blau);color:var(--weiss);font-size:14px;margin-right:var(--s2)}
+.schritt h3{display:flex;align-items:center;margin-bottom:var(--s1)}
+.notiz{color:var(--grau);text-align:center;margin-top:var(--s4)}
+
+/* Vergleich */
+.vergleich{width:100%;border-collapse:separate;border-spacing:0;background:var(--weiss);border:1px solid var(--linie);border-radius:var(--r);overflow:hidden;font-size:14px;line-height:20px;table-layout:fixed}
+.vergleich th,.vergleich td{padding:var(--s3) 2px;text-align:center;border-top:1px solid var(--linie);vertical-align:middle;font-weight:400;color:var(--grau)}
+.vergleich thead th{border-top:0;font-weight:700;color:var(--navy)}
+.vergleich th:first-child{text-align:left;padding-left:var(--s2);color:var(--navy);font-weight:600;width:25%}
+.vergleich .wir{background:var(--wahl);color:var(--navy);font-weight:700;width:24%}
+
+/* Fuer wen */
+.fuerwen{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s3)}
+.geschenk{margin-top:var(--s3)}
+
+/* Schluss */
+.schluss .bild{aspect-ratio:1/1;object-fit:cover;height:auto}
+.schluss h2{margin:var(--s5) 0 var(--s4);text-align:center}
+.schluss .kleinzeile{font-size:16px;line-height:22px;color:var(--grau);text-align:center;margin-top:var(--s3)}
+
+/* Unterseiten */
+.seite{padding:var(--s6) 0 var(--s7)}
+.seite .wrap{max-width:780px}
+.seite h1{font-size:28px;line-height:34px;margin-bottom:var(--s3)}
+.seite h2{font-size:22px;line-height:28px;margin:var(--s5) 0 var(--s2)}
+.seite p,.seite ul{color:var(--grau)}
+.seite p+p{margin-top:var(--s3)}
+.seite strong{color:var(--navy);font-weight:600}
+.seite ul{margin:var(--s2) 0 0;padding-left:var(--s5)}
+.seite li{margin-top:var(--s1)}
+.seite .bild{margin:var(--s4) 0}
+.seite .platz{margin:var(--s3) 0}
+.seite .seite__kauf{margin-top:var(--s6);max-width:420px}
+.grund{margin-top:var(--s6)}
+.grund h2{margin-top:0}
+.grund__nr{color:var(--blau);font-weight:700}
+
+/* Fuss */
+.fuss{background:var(--navy);color:#C9D1DF;padding:var(--s7) 0 96px}
+.fuss__spalten{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5) var(--s4)}
+.fuss__marke{grid-column:1/-1}
+.fuss__marke img{height:32px;width:auto}
+.fuss__logo{display:inline-block!important;padding:6px 0!important;margin:0!important}
+.fuss__marke p{margin-top:var(--s3)}
+.fuss a{color:var(--weiss);text-decoration:none}
+.fuss__marke a{display:inline-block;padding:10px 0;margin-top:var(--s1)}
+.fuss h3{color:var(--weiss);font-size:16px;line-height:24px;margin:0 0 var(--s1)}
+.fuss ul{list-style:none;padding:0;margin:0}
+.fuss li a{display:flex;align-items:center;min-height:44px}
+.fuss__klein{font-size:14px;line-height:20px;color:#A9B4C7;margin-top:var(--s5);border-top:1px solid rgba(255,255,255,.16);padding-top:var(--s4)}
+.fuss__klein p+p{margin-top:var(--s2)}
+
+/* Klebeleiste */
+.klebe{position:fixed;left:0;right:0;bottom:0;background:var(--weiss);border-top:1px solid var(--linie);padding:var(--s2) var(--s4) calc(var(--s2) + env(safe-area-inset-bottom));display:flex;align-items:center;gap:var(--s3);transform:translateY(110%);transition:transform .22s;z-index:20}
+.klebe.an{transform:none}
+.klebe__text{flex:1;min-width:0;font-size:14px;line-height:20px}
+.klebe__text strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.klebe__text span{color:var(--grau)}
+.klebe .knopf{width:auto;flex:none;min-height:48px;padding:var(--s2) var(--s4);font-size:16px}
+
+/* Schublade: Korb und Menue */
+.schublade{position:fixed;inset:0;z-index:40;visibility:hidden;overflow:hidden}
+.schublade.offen{visibility:visible}
+.schublade__grund{position:absolute;inset:0;background:rgba(11,31,63,.45);opacity:0;transition:opacity .2s}
+.schublade.offen .schublade__grund{opacity:1}
+.schublade__blatt{position:absolute;top:0;bottom:0;right:0;width:min(420px,92vw);background:var(--weiss);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s}
+.schublade.offen .schublade__blatt{transform:none}
+.schublade__kopf{display:flex;align-items:center;justify-content:space-between;padding:var(--s1) var(--s2) var(--s1) var(--s4);border-bottom:1px solid var(--linie);min-height:56px}
+.schublade__kopf h2{font-size:18px;line-height:24px}
+.schublade__inhalt{flex:1;overflow-y:auto;padding:var(--s4)}
+.schublade__fuss{border-top:1px solid var(--linie);padding:var(--s4);padding-bottom:calc(var(--s4) + env(safe-area-inset-bottom))}
+.posten{display:grid;grid-template-columns:64px 1fr auto;gap:var(--s3);align-items:center;padding:var(--s3) 0;border-bottom:1px solid var(--linie)}
+.posten:first-child{padding-top:0}
+@media(max-height:720px){.posten{padding:var(--s2) 0}}
+.posten img{width:64px;height:64px;border-radius:8px;object-fit:cover;background:var(--grau-h)}
+.posten strong{display:block;font-weight:600;line-height:20px}
+.posten span{display:block;font-size:14px;line-height:20px;color:var(--grau)}
+.posten b{font-weight:700;white-space:nowrap}
+.entfernen{background:none;border:0;padding:0;color:var(--blau);font-size:14px;text-decoration:underline;cursor:pointer;display:inline-flex;align-items:center;min-height:44px}
+.summe{display:flex;justify-content:space-between;font-weight:700;font-size:18px;line-height:24px}
+.lieferzeile{display:flex;justify-content:space-between;color:var(--grau);margin-top:var(--s1)}
+.kleintext{font-size:14px;line-height:20px;color:var(--grau);margin-top:var(--s2)}
+.schublade__fuss .knopf{margin-top:var(--s3)}
+.express{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);margin-top:var(--s2)}
+.express .knopf{width:100%;min-height:44px;margin-top:0;padding:var(--s1) var(--s2)}
+.hinweis{font-size:16px;line-height:22px;background:var(--wahl);border-radius:8px;padding:var(--s2) var(--s3);margin-top:var(--s2)}
+.korb-leer{text-align:center;padding:var(--s6) 0}
+.korb-leer p{margin-bottom:var(--s4);color:var(--grau)}
+.menue{list-style:none;margin:0;padding:0}
+.menue a{display:flex;align-items:center;min-height:48px;color:var(--navy);text-decoration:none;font-size:18px;font-weight:600;border-bottom:1px solid var(--linie)}
+
+/* Grosses Kundenfoto */
+.grossbild{position:fixed;inset:0;z-index:50;background:var(--navy);display:flex;align-items:center;justify-content:center;padding:56px var(--s4) var(--s4)}
+.grossbild img{width:100%;height:100%;object-fit:contain}
+.grossbild .symbol{position:absolute;top:var(--s1);right:var(--s1);color:var(--weiss)}
+
+@media(min-width:760px){
+  .stimmen{grid-template-columns:1fr 1fr;align-items:start}
+  .schritte{grid-template-columns:repeat(3,1fr)}
+  .schritt{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .schritt img{height:auto;aspect-ratio:573/265}
+  .schritt__links{object-position:50% 15%}
+  .schritt>div{align-self:start}
+  .fuerwen{grid-template-columns:repeat(4,1fr)}
+  .fuss__spalten{grid-template-columns:2fr 1fr 1fr 1fr}
+  .fuss__marke{grid-column:auto}
+}
+@media(min-width:900px){
+  h2{font-size:36px;line-height:44px}
+  .wrap{padding:0 var(--s5)}
+  .band{padding:6px var(--s4)}
+  .kopf .wrap{height:72px;gap:var(--s6)}
+  .logo img{height:40px}
+  .nav{display:flex;gap:var(--s5);font-size:16px}
+  .nav a{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;color:var(--navy);text-decoration:none;font-weight:500}
+  .nav a:hover{color:var(--blau)}
+  .menue-knopf{display:none}
+  .produkt{padding:var(--s6) 0 var(--s7)}
+  .produkt .wrap{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:var(--s7);align-items:start}
+  .galerie__spur{aspect-ratio:1/1;background:var(--grau-h)}
+  .folie img{background:var(--grau-h)}
+  .zaehler{display:none}
+  .daumen{display:flex;gap:var(--s2);margin-top:var(--s2);overflow-x:auto;scrollbar-width:none;padding:2px}
+  .daumen::-webkit-scrollbar{display:none}
+  .daumen button{flex:none;width:64px;height:64px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:var(--grau-h);cursor:pointer}
+  .daumen button[aria-current=true]{border-color:var(--blau)}
+  .daumen img{width:100%;height:100%;object-fit:cover}
+  .titel{font-size:36px;line-height:44px}
+  .satz{font-size:18px;line-height:26px;margin:var(--s2) 0 var(--s3)}
+  .haken li{font-size:18px;line-height:28px;background-position:left 6px}
+  .angebote{margin:var(--s4) 0}
+  .abschnitt{padding:var(--s8) 0}
+  .zwei{grid-template-columns:1fr 1fr;gap:var(--s7);align-items:center}
+  .fuerwen{grid-template-columns:1fr 1fr}
+  .schluss .wrap{max-width:760px}
+  .schluss .bild{aspect-ratio:1/1;max-width:520px;margin:0 auto}
+  .seite h1{font-size:36px;line-height:44px}
+}
+@media(min-width:1050px){
+  .stimmen{grid-template-columns:repeat(3,1fr)}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .klebe,.schublade__grund,.schublade__blatt{transition:none}
+}
+/* Handy: Das Bild bekommt, was Text, Karten und Knopf uebrig lassen; so steht der echte Kaufknopf im ersten Bildschirm.
+   Mobile Safari gemessen: 390 x 699, 402 x 714, 440 x 796. svh aendert sich beim Einfahren der Leisten nicht, html.flach wird nur einmal beim Laden gesetzt, darum springt nichts. */
+@media(max-width:899px){
+  :root{--text-rest:458px;--zeilen:54px;--umbruch:0px;--gal-max:calc((100vw - 32px)*334/358);--gal:clamp(200px,calc(100vh - var(--text-rest) - var(--zeilen) - var(--umbruch)),var(--gal-max))}
+  html.flach{--zeilen:0px}
+  html.flach .satz,html.flach .haken li:first-child{display:none}
+  .galerie__spur{aspect-ratio:auto;height:var(--gal)}
+  .folie--fuellt img{width:auto;max-width:100%;margin:0 auto;border-radius:var(--r);object-fit:cover}
+  .zaehler{right:calc((100% - var(--gal))/2 + var(--s2));padding:0 var(--s2);line-height:22px}
+  .folie:nth-child(5) img{width:auto;max-width:100%;margin:0 auto;border-radius:var(--r)}
+}
+@supports(height:1svh){@media(max-width:899px){:root{--gal:clamp(200px,calc(100svh - var(--text-rest) - var(--zeilen) - var(--umbruch)),var(--gal-max))}}}
+@media(max-width:382px){:root{--umbruch:18px}}
