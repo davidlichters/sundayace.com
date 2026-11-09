@@ -1,4 +1,4 @@
-/* Desk'd Up, Vorschau RallyLoop. Ein Gestaltungssystem:
+/* SundayAce, Vorschau RallyLoop. Ein Gestaltungssystem:
    Schrift: Figtree 400/600/700. Farben: Navy (Logo, Knopf, Text), Blau (Auswahl, Haken, Links), Bernstein (nur Sterne), dazu Weiss und Grau.
    Abstand: 4 8 12 16 24 32 48 64. Schriftgroessen: 14 16 18 22 28 36. Ein Knopf, eine Karte, Radius ueberall 12. */
 @font-face{font-family:'Figtree';font-weight:300 900;font-style:normal;font-display:swap;src:url('../fonts/Figtree.woff2') format('woff2')}
@@ -34,8 +34,12 @@ button{font:inherit;color:inherit}
 .band{background:var(--navy);color:var(--weiss);font-size:14px;font-weight:600;line-height:20px;text-align:center;padding:var(--s1) var(--s4)}
 .kopf{background:var(--weiss);border-bottom:1px solid var(--linie)}
 .kopf .wrap{display:flex;align-items:center;gap:var(--s2);height:48px}
-.logo{display:block;flex:none;padding:6px 0}
-.logo img{height:32px;width:auto}
+.logo{display:flex;align-items:center;gap:6px;flex:none;height:44px;color:var(--navy);text-decoration:none}
+.logo__ball{flex:none;width:24px;height:24px}
+.logo__ball circle{fill:#C8E03C}
+.logo__ball path{fill:none;stroke:var(--weiss);stroke-width:1.6;stroke-linecap:round}
+.logo__wort{font-size:22px;font-weight:800;line-height:32px;letter-spacing:-.02em}
+.logo__wort b{font-weight:800;color:var(--blau)}
 .nav{display:none}
 .kopf__rechts{display:flex;align-items:center;margin-left:auto;margin-right:calc(var(--s2) * -1)}
 .symbol{position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;background:none;cursor:pointer;color:var(--navy)}
@@ -213,8 +217,8 @@ button{font:inherit;color:inherit}
 .fuss{background:var(--navy);color:#C9D1DF;padding:var(--s7) 0 96px}
 .fuss__spalten{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5) var(--s4)}
 .fuss__marke{grid-column:1/-1}
-.fuss__marke img{height:32px;width:auto}
-.fuss__logo{display:inline-block!important;padding:6px 0!important;margin:0!important}
+.fuss__logo{display:inline-flex!important;align-items:center;gap:6px;height:44px;padding:0!important;margin:0!important;color:var(--weiss);text-decoration:none}
+.fuss__logo .logo__wort b{color:#8FB3F5}
 .fuss__marke p{margin-top:var(--s3)}
 .fuss a{color:var(--weiss);text-decoration:none}
 .fuss__marke a{display:inline-block;padding:10px 0;margin-top:var(--s1)}
