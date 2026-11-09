@@ -288,7 +288,6 @@ button{font:inherit;color:inherit}
   .wrap{padding:0 var(--s5)}
   .band{padding:6px var(--s4)}
   .kopf .wrap{height:72px;gap:var(--s6)}
-  .logo img{height:40px}
   .nav{display:flex;gap:var(--s5);font-size:16px}
   .nav a{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;color:var(--navy);text-decoration:none;font-weight:500}
   .nav a:hover{color:var(--blau)}
@@ -329,7 +328,7 @@ button{font:inherit;color:inherit}
   html.flach .satz,html.flach .haken li:first-child{display:none}
   .galerie__spur{aspect-ratio:auto;height:var(--gal)}
   .folie--fuellt img{width:auto;max-width:100%;margin:0 auto;border-radius:var(--r);object-fit:cover}
-  .zaehler{right:calc((100% - var(--gal))/2 + var(--s2));padding:0 var(--s2);line-height:22px}
+  .zaehler{right:calc((100% - var(--gal))/2 + var(--s2));padding:0 var(--s1);line-height:22px}
   .folie:nth-child(5) img{width:auto;max-width:100%;margin:0 auto;border-radius:var(--r)}
 }
 @supports(height:1svh){@media(max-width:899px){:root{--gal:clamp(200px,calc(100svh - var(--text-rest) - var(--zeilen) - var(--umbruch)),var(--gal-max))}}}

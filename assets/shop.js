@@ -116,7 +116,7 @@
       if(schlussKnopf){var r=schlussKnopf.getBoundingClientRect();schluss=r.top<innerHeight&&r.bottom>0}
       klebe.classList.toggle('an',weg&&!schluss);
     };
-    addEventListener('scroll',pruef,{passive:true});addEventListener('resize',pruef);pruef();
+    addEventListener('scroll',pruef,{passive:true});addEventListener('resize',pruef);pruef();if(document.fonts)document.fonts.ready.then(pruef);
   }
 
   // Bilder vorladen: nie sichtbares Nachladen. Zuerst Folie 2, dann alles auf der Seite in Reihenfolge,
